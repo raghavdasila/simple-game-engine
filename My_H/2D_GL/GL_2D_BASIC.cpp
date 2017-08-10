@@ -2,11 +2,13 @@
 #include <vector>
 #include <string>
 using namespace std;
+typedef long unsigned LU;
 //g++ Obj_Graphics.cpp ~/Documents/CPP/My_H/2D_GL/GL_2D_BASIC.cpp -lGL -lglut -lGLU
 struct vertex2i{int x,y;};
 struct vertex2f{float x,y;};
-struct vertex3f{float x,y,z;};
+struct vertex3f{float x,y,z;};l
 int iSpeed;
+vector<LU> registeredFunctions;
 void displayCB();
 class Object2D;
 class Vertex2i
@@ -31,6 +33,7 @@ class Object2D
 		vector<vertex2i> polygon;
 		vertex3f colour;
 		vector<unsigned char> actionKeys;
+		vector<auto> callbacks;
 	public:
 		Object2D(vector<Vertex2i> set, string _name)
 		{
@@ -67,7 +70,7 @@ void Create_Object(vector<Vertex2i> set,string name)
 	WorldObjects.push_back(Object2D(set,name));
 }
 //---------------------OBJECT PROPERTY ASSIGNERS-------
-void setProperty(string property,Object2D *Obj,float values[]=NULL,int N=0)
+void setProperty(string property,Object2D *Obj,float values[]=NULL,int N=0)  //OPTIMISE USING TRIE
 {
 	if(property=="colour")
 		Obj->setColour(values[0],values[1],values[2]);
@@ -81,6 +84,8 @@ void setProperty(string property,Object2D *Obj,float values[]=NULL,int N=0)
 		Obj->setTag(property.substr(4));
 	else if(property=="speed")
 		iSpeed=values[0];
+	else if(property=="callback")
+		registerCallback(Obj,values[0]);
 }
 void SET(string ObjName,string property,float values[]=NULL,int N=0)
 {
@@ -133,6 +138,11 @@ void basicMove(Object2D *Obj,unsigned char key)
 	if(key=='a'|key=='A')
 		translate2D(Obj,Vertex2i(-iSpeed,0).V);
 	displayCB();
+}
+//------------------------------------CALLBACK REGISTERATION
+void registerCallback(Object2D *Obj,float functionID)
+{
+	registeredFunctions[functionID];
 }
 //-----------------------------------RENDERING PATHS AND ROUTINES-------
 void displayCB()
